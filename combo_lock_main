@@ -1,0 +1,132 @@
+// BRANDEN SCHNEIDER COMBO LOCK FINAL PROJECT
+#include <hidef.h> /* for EnableInterrupts macro */
+#include "derivative.h" /* include peripheral declarations */
+
+#define SECCOUNT 125
+
+    unsigned char newkey=0,badcount=0;
+    unsigned int mtimcntdn=0;
+  
+    void waitp(void),dally1(void),decode(void),waitr(void),dally2(void);
+    void (*keystate=waitp)(void);        /* key state ptr */
+    void next(unsigned char), wrong(unsigned char);  /* combination state functions */
+    void (*combostate=next)(unsigned char);        /* code state ptr */
+         
+    void badcode(void); /* called by last and wrong */
+	
+	unsigned const char code[]="12345";
+	unsigned char *nextdigit=code[0];
+  
+void main(void) {
+    unsigned int i;     
+    SOPT1 = SOPT1_BKGDPE_MASK+SOPT1_RSTPE_MASK;
+    ICSTRM = NV_ICSTRM;
+    for (i=0;i<400;i++); /* delay 2 ms (at 4 MHz) */ 
+    ICSC2 = 0;  /* up speed to 8 MHz */
+  
+    PTAPE = 0xfc;
+    PTBPE = 0xff;
+    
+    PTADD = 3; /* set pin 16 and 15 as an output */
+    PTADS = 3; /* make capable of driving LEDs */
+    
+    MTIMCLK = 0x08;  /* use bus clock divided by 256 */
+    MTIMMOD = 249;   /* make period exactly 8 ms */
+    MTIMSC = 0x40;   /* start timer and enable TOF ints */
+
+    EnableInterrupts; /* enable interrupts */
+
+    for(;;);   /* loop forever */
+ }
+  
+interrupt VectorNumber_Vmtim mtimisr() {
+    MTIMSC_TOF = 0;  /* ack interrupt */
+    if (ledcntdn == 0)
+       keystate();      /* execute current state */
+    else if (mtimcntdn-- == 0) /* dec count */
+	   RED = GREEN = 0; /* turn off LEDs */
+ }
+
+// place the five keypad decoding state functions here
+
+void key1(unsigned char key)
+  {
+  
+  }
+
+void key2(unsigned char key)
+  {
+  
+  }
+  
+void key3(unsigned char key)
+  {
+  
+  }
+  
+void key4(unsigned char key)
+  {
+  
+  }
+
+void decode(unsigned char key)
+  {
+  if (key = '#'):
+    combostate(unsigned char key);
+    else
+      badcode(void);
+  }
+
+// the decode state must trigger a combostate function
+  
+void combostate(unsigned char key)
+  {
+  
+  }
+
+void next(unsigned char key) {
+  // check for * and # and perform appropriate action.
+	// for * you just set nextdigit back to start of code
+	// for # you see if the code is complete (current digit
+	//     is null) -- if complete light GREEN, reset badcount
+    //     to zero, & set mtimcntdn; else call badcode().
+    if (key == *nextdigit)
+       //  advance to next digit
+    else
+       combostate = wrong;
+    }
+    
+     
+void wrong(unsigned char key) {
+    switch (* or #)
+      {
+      case1:
+        next();
+        combostate(unsigned char key);
+        break;
+      case2:
+        badcode(void);
+        break;
+      default:
+        cout<<"Error, bad input, quitting\n";
+        break;
+      }
+    //check for * and #.  If * start over (nextdigit and combostate)
+	  //if # call badcode()
+    }
+    
+void badcode(void) {
+    
+    /* must light red LED, increment badcount */
+    /* if badcount too high delay 30 else delay 2 */
+    if badcount(void) >= 5:
+      delay(30);
+      else
+        delay(2);
+        
+    badcount = badcount++;
+    
+    /* set reinitialize combostate and nextdigit for a new try */
+       
+    
+    }
