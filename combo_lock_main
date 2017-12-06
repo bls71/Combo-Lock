@@ -3,6 +3,8 @@
 #include "derivative.h" /* include peripheral declarations */
 
 #define SECCOUNT 125
+#define BUFS 100
+static unsigned char buffer[BUFS], *inptr = buffer, *outptr =buffer;
 
     unsigned char newkey=0,badcount=0;
     unsigned int mtimcntdn=0;
@@ -48,6 +50,20 @@ interrupt VectorNumber_Vmtim mtimisr() {
  }
 
 // place the five keypad decoding state functions here
+
+void addbyte(unsigned char newchar)
+	{   
+	*inptr = newchar;   
+	if (++inptr >= buffer+BUFS)      
+		inptr = buffer;
+	}
+
+if (inptr != output)
+	{   
+	chara = *outptr;   
+	if (++outptr >= buffer+BUFS)      
+		outptr = buffer;   
+	}
 
 void key1(unsigned char key)
   {
